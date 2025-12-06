@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "335193141006",
+    "project_id": "jastipie-app",
+    "storage_bucket": "jastipie-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:335193141006:android:8d548ddb9ef9ec41f4315f",
+        "android_client_info": {
+          "package_name": "com.example.jastipie_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBslUY_poGMwoSwEHbEKLZnVUuR7xRSASw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
