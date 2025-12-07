@@ -1,8 +1,7 @@
-// lib/views/auth/register_page.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../viewmodels/auth_vm.dart';
-import '../../app_router.dart';
+import 'package:jastipie_app/src/viewmodels/auth_vm.dart';
+import 'package:jastipie_app/app_router.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -42,8 +41,11 @@ class _RegisterPageState extends State<RegisterPage> {
             ElevatedButton(
               onPressed: () async {
                 await authVM.register(_emailCtrl.text, _passCtrl.text);
+                if (!mounted) return; // ✅ cek context setelah async
                 if (authVM.user != null) {
-                  Navigator.pushReplacementNamed(context, AppRouter.roleSelection);
+                  Navigator.of(context).pushReplacementNamed(
+                    AppRouter.roleSelectionRoute, // ✅ gunakan nama yang benar
+                  );
                 }
               },
               child: const Text("Register"),

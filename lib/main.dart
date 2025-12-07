@@ -5,7 +5,6 @@ import 'theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Minimal Firebase init. Assumes platform-specific configs are set (Android/iOS/web).
   await Firebase.initializeApp();
 
   runApp(const JastipieApp());
@@ -19,7 +18,7 @@ class JastipieApp extends StatelessWidget {
     return MaterialApp(
       title: 'JASTIPIE',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
+      theme: appTheme,
       initialRoute: AppRouter.initialRoute,
       onGenerateRoute: AppRouter.onGenerateRoute,
     );

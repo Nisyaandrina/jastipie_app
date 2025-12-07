@@ -1,6 +1,5 @@
-// lib/views/auth/role_selection_page.dart
 import 'package:flutter/material.dart';
-import '../../app_router.dart';
+import 'package:jastipie_app/app_router.dart';
 
 class RoleSelectionPage extends StatelessWidget {
   const RoleSelectionPage({super.key});
@@ -15,14 +14,18 @@ class RoleSelectionPage extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, AppRouter.homeJastiper);
+                Navigator.of(context).pushReplacementNamed(
+                  AppRouter.homeJastiperRoute, 
+                );
               },
               child: const Text("Masuk sebagai Jastiper"),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, AppRouter.homePenitip);
+                Navigator.of(context).pushReplacementNamed(
+                  AppRouter.homePenitipRoute, 
+                );
               },
               child: const Text("Masuk sebagai Penitip"),
             ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../viewmodels/auth_vm.dart';
-import '../../app_router.dart';
+import 'package:jastipie_app/src/viewmodels/auth_vm.dart';
+import 'package:jastipie_app/app_router.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -41,15 +41,18 @@ class _LoginPageState extends State<LoginPage> {
             ElevatedButton(
               onPressed: () async {
                 await authVM.login(_emailCtrl.text, _passCtrl.text);
+                if (!mounted) return; // ✅ cek context setelah async
                 if (authVM.user != null) {
-                  Navigator.pushReplacementNamed(context, AppRouter.roleSelection);
+                  Navigator.of(context).pushReplacementNamed(
+                    AppRouter.roleSelectionRoute,
+                  );
                 }
               },
               child: const Text("Login"),
             ),
             TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, AppRouter.register);
+                Navigator.of(context).pushNamed(AppRouter.registerRoute);
               },
               child: const Text("Belum punya akun? Register"),
             ),
