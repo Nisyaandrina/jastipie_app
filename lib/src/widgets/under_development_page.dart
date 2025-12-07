@@ -3,7 +3,7 @@ import 'package:jastipie_app/theme.dart';
 
 class UnderDevelopmentPage extends StatelessWidget {
   final String routeName; 
-
+  
   const UnderDevelopmentPage({super.key, required this.routeName});
 
   @override
@@ -37,7 +37,7 @@ class UnderDevelopmentPage extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                'Halaman: $routeName',
+                'Halaman: $routeName', 
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppColors.textDark.withValues(alpha: 0.7),
