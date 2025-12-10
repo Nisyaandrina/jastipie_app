@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/booking_vm.dart';
 import '../../models/booking_model.dart';
-import '../../app_router.dart';
+import 'package:jastipie_app/app_router.dart';
 
 class BookingListPage extends StatelessWidget {
   final String tripId;

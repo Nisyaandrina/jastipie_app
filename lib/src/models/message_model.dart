@@ -26,12 +26,18 @@ class MessageModel {
   }
 
   factory MessageModel.fromMap(Map<String, dynamic> map) {
+    final created = map['createdAt'];
+
+    // Jika bukan Timestamp → fallback
+    final Timestamp ts =
+        (created is Timestamp) ? created : Timestamp.now();
+
     return MessageModel(
-      messageId: map['messageId'],
-      chatId: map['chatId'],
-      senderId: map['senderId'],
-      text: map['text'],
-      createdAt: map['createdAt'],
+      messageId: map['messageId'] ?? '',
+      chatId: map['chatId'] ?? '',
+      senderId: map['senderId'] ?? '',
+      text: map['text'] ?? '',
+      createdAt: ts,
     );
   }
 }

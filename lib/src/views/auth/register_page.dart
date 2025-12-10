@@ -11,8 +11,13 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final _emailCtrl = TextEditingController();
-  final _passCtrl = TextEditingController();
+  final TextEditingController _emailCtrl = TextEditingController();
+  final TextEditingController _passCtrl = TextEditingController();
+
+  /// Handler sinkron untuk navigasi 
+  void _onRegisterSuccess() {
+    Navigator.of(context).pushReplacementNamed(AppRouter.roleSelectionRoute);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,25 +34,49 @@ class _RegisterPageState extends State<RegisterPage> {
               decoration: const InputDecoration(labelText: "Email"),
             ),
             const SizedBox(height: 12),
+
             TextField(
               controller: _passCtrl,
               obscureText: true,
               decoration: const InputDecoration(labelText: "Password"),
             ),
             const SizedBox(height: 20),
+
+            /// Loading indicator
             if (authVM.loading) const CircularProgressIndicator(),
+
+            /// Error display
             if (authVM.error != null)
-              Text(authVM.error!, style: const TextStyle(color: Colors.red)),
+              Text(
+                authVM.error!,
+                style: const TextStyle(color: Colors.red),
+              ),
+
             ElevatedButton(
-              onPressed: () async {
-                await authVM.register(_emailCtrl.text, _passCtrl.text);
-                if (!mounted) return; // ✅ cek context setelah async
-                if (authVM.user != null) {
-                  Navigator.of(context).pushReplacementNamed(
-                    AppRouter.roleSelectionRoute, // ✅ gunakan nama yang benar
-                  );
-                }
-              },
+              onPressed: authVM.loading
+                  ? null
+                  : () async {
+                      final email = _emailCtrl.text.trim();
+                      final pass = _passCtrl.text.trim();
+
+                      // optional validation
+                      if (email.isEmpty || pass.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content:
+                                  Text("Email dan password tidak boleh kosong")),
+                        );
+                        return;
+                      }
+
+                      await authVM.register(email, pass);
+
+                      if (!mounted) return;
+
+                      if (authVM.user != null) {
+                        _onRegisterSuccess(); 
+                      }
+                    },
               child: const Text("Register"),
             ),
           ],

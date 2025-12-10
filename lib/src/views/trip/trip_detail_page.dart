@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+
 import '../../models/trip_model.dart';
 import '../../viewmodels/trip_vm.dart';
 
@@ -10,71 +12,47 @@ class TripDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => TripViewModel()..fetchTripById(tripId),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Detail Trip"),
-        ),
-        body: Consumer<TripViewModel>(
-          builder: (context, vm, _) {
-            if (vm.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
+    final vm = Provider.of<TripViewModel>(context);
 
-            final TripModel? trip = vm.selectedTrip;
+    if (vm.tripDetail == null || vm.tripDetail!.id != tripId) {
+      vm.fetchTripDetail(tripId);
+    }
 
-            if (trip == null) {
-              return const Center(
-                child: Text("Trip tidak ditemukan."),
-              );
-            }
-
-            return Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildItem("Asal", trip.origin),
-                  _buildItem("Tujuan", trip.destination),
-                  _buildItem("Tanggal", trip.date),
-                  _buildItem("Kapasitas", trip.capacity.toString()),
-                  _buildItem("Harga", "Rp ${trip.price.toStringAsFixed(0)}"),
-
-                  const SizedBox(height: 30),
-
-                  ElevatedButton(
-                    onPressed: () {
-                      // Integrasi booking akan dibuat setelah modul booking siap
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Fitur Accept Booking belum diintegrasikan."),
-                        ),
-                      );
-                    },
-                    child: const Text("Accept Booking"),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-      ),
+    return Scaffold(
+      appBar: AppBar(title: const Text("Detail Trip")),
+      body: vm.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : vm.tripDetail == null
+              ? const Text("Trip tidak ditemukan")
+              : _buildContent(context, vm.tripDetail!),
     );
   }
 
-  Widget _buildItem(String label, String value) {
+  Widget _buildContent(BuildContext context, TripModel trip) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label,
-              style:
-                  const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-          Text(value, style: const TextStyle(fontSize: 16)),
+          item("Asal", trip.origin),
+          item("Tujuan", trip.destination),
+          item("Tanggal", DateFormat('dd MMM yyyy').format(trip.departureDate)),
+          item("Kapasitas", trip.quota.toString()),
+          item("Harga", "Rp ${trip.price.toStringAsFixed(0)}"),
+          const SizedBox(height: 20),
         ],
       ),
     );
   }
+
+  Widget item(String label, String value) => Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(value),
+          ],
+        ),
+      );
 }

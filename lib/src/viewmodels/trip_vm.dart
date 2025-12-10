@@ -5,12 +5,11 @@ import '../services/trip_service.dart';
 class TripViewModel extends ChangeNotifier {
   final TripService _tripService = TripService();
 
-  /// State
   bool isLoading = false;
+  bool isLoaded = false; // <-- tambah field ini
   List<TripModel> trips = [];
   TripModel? tripDetail;
 
-  /// LOADING HANDLER
   void _setLoading(bool value) {
     isLoading = value;
     notifyListeners();
@@ -18,37 +17,43 @@ class TripViewModel extends ChangeNotifier {
 
   /// FETCH ALL TRIPS
   Future<void> fetchTrips() async {
+    // if already loaded and you want to force refresh, you can skip this check
+    // if (isLoaded) return;
     _setLoading(true);
     try {
       trips = await _tripService.getTrips();
+      isLoaded = true; // tandai sudah di-load
+      notifyListeners();
     } catch (e) {
-      debugPrint("Error fetching trips: $e");
+      debugPrint("Error fetchTrips: $e");
     } finally {
       _setLoading(false);
     }
   }
 
   /// FETCH TRIP DETAIL
-  Future<void> fetchTripDetail(String tripId) async {
+  Future<void> fetchTripDetail(String id) async {
     _setLoading(true);
     try {
-      tripDetail = await _tripService.getTripById(tripId);
+      tripDetail = await _tripService.getTripById(id);
+      notifyListeners();
     } catch (e) {
-      debugPrint("Error fetching trip detail: $e");
+      debugPrint("Error fetchTripDetail: $e");
     } finally {
       _setLoading(false);
     }
   }
 
-  /// CREATE TRIP
+  /// CREATE TRIP (mengembalikan bool untuk kompatibilitas UI)
   Future<bool> createTrip(TripModel trip) async {
     _setLoading(true);
     try {
-      await _tripService.createTrip(trip);
+      final createdId = await _tripService.createTrip(trip);
+      // optional: you can fetch the created doc if you want to have the model with id
       await fetchTrips(); // reload list setelah create
-      return true;
+      return createdId.isNotEmpty;
     } catch (e) {
-      debugPrint("Error creating trip: $e");
+      debugPrint("Error createTrip: $e");
       return false;
     } finally {
       _setLoading(false);
@@ -56,29 +61,29 @@ class TripViewModel extends ChangeNotifier {
   }
 
   /// UPDATE TRIP
-  Future<bool> updateTrip(String tripId, Map<String, dynamic> data) async {
+  Future<bool> updateTrip(String id, Map<String, dynamic> data) async {
     _setLoading(true);
     try {
-      await _tripService.updateTrip(tripId, data);
+      await _tripService.updateTrip(id, data);
       await fetchTrips();
       return true;
     } catch (e) {
-      debugPrint("Error updating trip: $e");
+      debugPrint("Error updateTrip: $e");
       return false;
     } finally {
       _setLoading(false);
     }
   }
 
-  /// CLOSE TRIP (Untuk integrasi booking)
-  Future<bool> closeTrip(String tripId) async {
+  /// CLOSE TRIP
+  Future<bool> closeTrip(String id) async {
     _setLoading(true);
     try {
-      await _tripService.closeTrip(tripId);
+      await _tripService.closeTrip(id);
       await fetchTrips();
       return true;
     } catch (e) {
-      debugPrint("Error closing trip: $e");
+      debugPrint("Error closeTrip: $e");
       return false;
     } finally {
       _setLoading(false);

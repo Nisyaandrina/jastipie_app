@@ -11,8 +11,13 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _emailCtrl = TextEditingController();
-  final _passCtrl = TextEditingController();
+  final TextEditingController _emailCtrl = TextEditingController();
+  final TextEditingController _passCtrl = TextEditingController();
+
+  /// Handler sinkron
+  void _handleLoginSuccess() {
+    Navigator.of(context).pushReplacementNamed(AppRouter.roleSelectionRoute);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,21 +40,41 @@ class _LoginPageState extends State<LoginPage> {
               decoration: const InputDecoration(labelText: "Password"),
             ),
             const SizedBox(height: 20),
+
             if (authVM.loading) const CircularProgressIndicator(),
+
             if (authVM.error != null)
               Text(authVM.error!, style: const TextStyle(color: Colors.red)),
+
             ElevatedButton(
-              onPressed: () async {
-                await authVM.login(_emailCtrl.text, _passCtrl.text);
-                if (!mounted) return; // ✅ cek context setelah async
-                if (authVM.user != null) {
-                  Navigator.of(context).pushReplacementNamed(
-                    AppRouter.roleSelectionRoute,
-                  );
-                }
-              },
+              onPressed: authVM.loading
+                  ? null
+                  : () async {
+                      final email = _emailCtrl.text.trim();
+                      final pass = _passCtrl.text.trim();
+
+                      // optional validation
+                      if (email.isEmpty || pass.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content:
+                                  Text("Email dan password tidak boleh kosong")),
+                        );
+                        return;
+                      }
+
+                      await authVM.login(email, pass);
+
+                      if (!mounted) return;
+
+                      if (authVM.user != null) {
+                        // Panggil handler sinkron 
+                        _handleLoginSuccess();
+                      }
+                    },
               child: const Text("Login"),
             ),
+
             TextButton(
               onPressed: () {
                 Navigator.of(context).pushNamed(AppRouter.registerRoute);

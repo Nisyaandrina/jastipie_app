@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class RequestModel {
   final String id;
   final String penitipId;
@@ -6,7 +8,7 @@ class RequestModel {
   final double priceEst;
   final double weight;
   final String note;
-  final String status; // PENDING, ACCEPTED, REJECTED, COMPLETED
+  final String status;
   final DateTime createdAt;
 
   RequestModel({
@@ -21,8 +23,9 @@ class RequestModel {
     required this.createdAt,
   });
 
-  // Konversi dari Map (Firestore) ke Object
   factory RequestModel.fromMap(Map<String, dynamic> data, String documentId) {
+    final createdAtField = data['created_at'];
+
     return RequestModel(
       id: documentId,
       penitipId: data['penitip_id'] ?? '',
@@ -32,13 +35,12 @@ class RequestModel {
       weight: (data['weight'] ?? 0).toDouble(),
       note: data['note'] ?? '',
       status: data['status'] ?? 'PENDING',
-      createdAt: data['created_at'] != null
-          ? DateTime.parse(data['created_at'])
-          : DateTime.now(),
+      createdAt: createdAtField is Timestamp
+          ? createdAtField.toDate()
+          : DateTime.tryParse(createdAtField ?? '') ?? DateTime.now(),
     );
   }
 
-  // Konversi dari Object ke Map (untuk simpan ke Firestore)
   Map<String, dynamic> toMap() {
     return {
       'penitip_id': penitipId,
@@ -48,7 +50,7 @@ class RequestModel {
       'weight': weight,
       'note': note,
       'status': status,
-      'created_at': createdAt.toIso8601String(),
+      'created_at': Timestamp.fromDate(createdAt),
     };
   }
 }

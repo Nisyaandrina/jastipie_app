@@ -27,7 +27,16 @@ class BookingViewModel extends ChangeNotifier {
   }
 
   Future<void> updateStatus(
-      String tripId, String bookingId, String status) async {
+    String tripId,
+    String bookingId,
+    String status,
+  ) async {
     await _service.updateBookingStatus(tripId, bookingId, status);
+    notifyListeners();
+  }
+
+  // supaya UI bisa akses detail booking
+  Future<BookingModel?> getBookingDetail(String tripId, String bookingId) {
+    return _service.getBookingDetail(tripId, bookingId);
   }
 }

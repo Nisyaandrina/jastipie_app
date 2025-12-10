@@ -13,11 +13,9 @@ class RequestViewModel extends ChangeNotifier {
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
-  // Stream untuk list request
   Stream<List<RequestModel>> get requestsStream =>
       _requestService.getRequests();
 
-  // Tambah Request Baru
   Future<bool> addRequest({
     required String itemName,
     required String category,
@@ -34,7 +32,7 @@ class RequestViewModel extends ChangeNotifier {
       if (user == null) throw Exception("User belum login");
 
       final newRequest = RequestModel(
-        id: '', // Firestore akan generate ID
+        id: '',
         penitipId: user.uid,
         itemName: itemName,
         category: category,
@@ -57,10 +55,20 @@ class RequestViewModel extends ChangeNotifier {
     }
   }
 
-  // Hapus Request
+  Future<void> updateStatus(String id, String status) async {
+    try {
+      await _requestService.updateStatus(id, status);
+      notifyListeners();
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
+  }
+
   Future<void> deleteRequest(String id) async {
     try {
       await _requestService.deleteRequest(id);
+      notifyListeners();
     } catch (e) {
       _errorMessage = e.toString();
       notifyListeners();

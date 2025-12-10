@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/trip_model.dart';
-import '../app_router.dart';
+import 'package:jastipie_app/app_router.dart';
 
 class TripCard extends StatelessWidget {
   final TripModel trip;
@@ -28,6 +28,7 @@ class TripCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              /// HEADER
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -38,11 +39,8 @@ class TripCard extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
-                  // Status open/closed
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
                     decoration: BoxDecoration(
                       color: trip.isOpen ? Colors.green : Colors.red,
                       borderRadius: BorderRadius.circular(12),
@@ -58,28 +56,20 @@ class TripCard extends StatelessWidget {
                 ],
               ),
 
+              const SizedBox(height: 10),
+
+              /// INFO
+              Text("Berangkat: ${_formatDate(trip.departureDate)}"),
+              Text("Kuota: ${trip.quota}"),
+              Text("Harga jasa: Rp ${trip.price.toStringAsFixed(0)}"),
+
               const SizedBox(height: 8),
-
-              Text(
-                "Berangkat: ${trip.departureDate.toLocal().toString().split(' ')[0]}",
-                style: const TextStyle(fontSize: 13),
-              ),
-
-              Text(
-                "Kuota: ${trip.quota}",
-                style: const TextStyle(fontSize: 13),
-              ),
-
-              Text(
-                "Harga jasa: Rp ${trip.price.toStringAsFixed(0)}",
-                style: const TextStyle(fontSize: 13),
-              ),
-
-              const SizedBox(height: 6),
               const Divider(),
+              const SizedBox(height: 4),
 
+              /// NOTES
               Text(
-                trip.notes,
+                trip.notes.isEmpty ? "Tidak ada catatan." : trip.notes,
                 style: const TextStyle(fontSize: 13, color: Colors.grey),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -89,5 +79,9 @@ class TripCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _formatDate(DateTime date) {
+    return date.toLocal().toString().split(" ")[0];
   }
 }

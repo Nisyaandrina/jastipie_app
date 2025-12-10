@@ -1,34 +1,58 @@
 import 'package:flutter/material.dart';
-import 'package:jastipie_app/src/services/user_service.dart';
+import '../models/user_model.dart';
+import '../services/user_service.dart';
 
-/// ViewModel untuk menghubungkan UI dengan UserService.
-/// Bisa dipakai dengan Provider/ChangeNotifier.
 class UserVM extends ChangeNotifier {
   final UserService _service = UserService();
 
-  String get name => _service.name;
-  String get email => _service.email;
-
+  UserModel? user;
   bool _loading = false;
   bool get loading => _loading;
 
-  Future<void> updateProfile(String name, String email) async {
-    _loading = true;
-    notifyListeners();
-
-    await _service.updateProfile(name: name, email: email);
-
-    _loading = false;
+  /// SETTER LOADING
+  void _setLoading(bool value) {
+    _loading = value;
     notifyListeners();
   }
 
-  Future<void> logout() async {
-    _loading = true;
-    notifyListeners();
+  /// LOAD USER BY ID
+  Future<void> loadUser(String userId) async {
+    _setLoading(true);
 
-    await _service.logout();
+    user = await _service.getUserById(userId);
 
-    _loading = false;
-    notifyListeners();
+    _setLoading(false);
+  }
+
+  /// UPDATE PROFILE
+  Future<bool> updateProfile({
+    required String name,
+    required String email,
+  }) async {
+    if (user == null) return false;
+
+    _setLoading(true);
+
+    try {
+      await _service.updateProfile(user!.id, {
+        'name': name,
+        'email': email,
+      });
+
+      /// Update local model data
+      user = user!.copyWith(
+        name: name,
+        email: email,
+        updatedAt: DateTime.now(),
+      );
+
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint("Error updating profile: $e");
+      return false;
+    } finally {
+      _setLoading(false);
+    }
   }
 }

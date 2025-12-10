@@ -4,12 +4,12 @@ class TripModel {
   final String id;
   final String jastiperId;
   final String origin;
-  final destination;
+  final String destination;
   final DateTime departureDate;
   final int quota;
   final double price;
   final String notes;
-  final bool isOpen; // untuk booking
+  final bool isOpen;
   final DateTime createdAt;
 
   TripModel({
@@ -25,23 +25,34 @@ class TripModel {
     required this.createdAt,
   });
 
-  /// Convert Firestore -> Model
+  /// Firestore → Model
   factory TripModel.fromJson(Map<String, dynamic> json, String documentId) {
+    // Helper: parse DateTime safely
+    DateTime parseDate(dynamic value) {
+      if (value is Timestamp) return value.toDate();
+      if (value is String) return DateTime.tryParse(value) ?? DateTime.now();
+      return DateTime.now();
+    }
+
     return TripModel(
       id: documentId,
       jastiperId: json['jastiperId'] ?? '',
       origin: json['origin'] ?? '',
       destination: json['destination'] ?? '',
-      departureDate: (json['departureDate'] as Timestamp).toDate(),
-      quota: json['quota'] ?? 0,
-      price: (json['price'] as num).toDouble(),
+      departureDate: parseDate(json['departureDate']),
+      quota: (json['quota'] ?? 0) is int
+          ? json['quota']
+          : int.tryParse(json['quota'].toString()) ?? 0,
+      price: (json['price'] ?? 0) is num
+          ? (json['price'] as num).toDouble()
+          : double.tryParse(json['price'].toString()) ?? 0,
       notes: json['notes'] ?? '',
       isOpen: json['isOpen'] ?? true,
-      createdAt: (json['createdAt'] as Timestamp).toDate(),
+      createdAt: parseDate(json['createdAt']),
     );
   }
 
-  /// Convert Model -> Firestore
+  /// Model → Firestore
   Map<String, dynamic> toJson() {
     return {
       'jastiperId': jastiperId,

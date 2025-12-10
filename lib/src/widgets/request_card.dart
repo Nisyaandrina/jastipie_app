@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jastipie_app/src/models/request_model.dart';
-import 'package:jastipie_app/src/utils/formatters.dart'; // Import formatter
-import 'package:jastipie_app/theme.dart'; // Import theme
+import 'package:jastipie_app/src/utils/formatters.dart';
+import 'package:jastipie_app/theme.dart';
 
 class RequestCard extends StatelessWidget {
   final RequestModel request;
@@ -18,15 +18,15 @@ class RequestCard extends StatelessWidget {
     switch (request.status) {
       case 'ACCEPTED':
         statusColor = Colors.green;
-        statusBgColor = Colors.green.withOpacity(0.1);
+        statusBgColor = Colors.green.withValues(alpha: 0.1); 
         break;
       case 'REJECTED':
         statusColor = Colors.red;
-        statusBgColor = Colors.red.withOpacity(0.1);
+        statusBgColor = Colors.red.withValues(alpha: 0.1); 
         break;
       default: // PENDING
         statusColor = Colors.orange;
-        statusBgColor = Colors.orange.withOpacity(0.1);
+        statusBgColor = Colors.orange.withValues(alpha: 0.1); 
     }
 
     return Card(
@@ -45,7 +45,7 @@ class RequestCard extends StatelessWidget {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha: 0.1), 
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(
@@ -63,18 +63,20 @@ class RequestCard extends StatelessWidget {
                   children: [
                     Text(
                       request.itemName,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
                     Text(
                       request.category,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: Colors.grey[600]),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -90,7 +92,8 @@ class RequestCard extends StatelessWidget {
 
               // Status Badge
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: statusBgColor,
                   borderRadius: BorderRadius.circular(8),

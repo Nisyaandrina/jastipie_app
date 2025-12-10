@@ -8,40 +8,26 @@ class TripListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => TripViewModel()..fetchTrips(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Daftar Trip"),
-        ),
-        body: Consumer<TripViewModel>(
-          builder: (context, vm, _) {
-            if (vm.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
+    final vm = Provider.of<TripViewModel>(context);
 
-            if (vm.trips.isEmpty) {
-              return const Center(
-                child: Text("Belum ada trip yang tersedia."),
-              );
-            }
+    if (!vm.isLoaded) {
+      vm.fetchTrips();
+    }
 
-            return ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: vm.trips.length,
-              itemBuilder: (context, index) {
-                final trip = vm.trips[index];
-                return TripCard(trip: trip);
-              },
-            );
-          },
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/create-trip');
-          },
-          child: const Icon(Icons.add),
-        ),
+    return Scaffold(
+      appBar: AppBar(title: const Text("Daftar Trip")),
+      body: vm.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : vm.trips.isEmpty
+              ? const Center(child: Text("Belum ada trip."))
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: vm.trips.length,
+                  itemBuilder: (context, i) => TripCard(trip: vm.trips[i]),
+                ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () => Navigator.pushNamed(context, '/create-trip'),
       ),
     );
   }

@@ -20,7 +20,7 @@ class BookingDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Detail Booking')),
       body: FutureBuilder<BookingModel?>(
-        future: bookingVM._service.getBookingDetail(tripId, bookingId),
+        future: bookingVM.getBookingDetail(tripId, bookingId),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());

@@ -37,7 +37,7 @@ class RequestDetailPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05), // FIXED
                     blurRadius: 5,
                     offset: const Offset(0, 2),
                   ),
@@ -57,8 +57,7 @@ class RequestDetailPage extends StatelessWidget {
                       Expanded(
                         child: Text(
                           request.itemName,
-                          style: Theme.of(context).textTheme.headlineSmall
-                              ?.copyWith(
+                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.textDark,
                                 fontSize: 20,
@@ -104,6 +103,7 @@ class RequestDetailPage extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 8),
+
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
@@ -125,7 +125,6 @@ class RequestDetailPage extends StatelessWidget {
               AppButton(
                 label: "Tawarkan Bantuan (Booking)",
                 onPressed: () {
-                  // Arahkan ke list booking atau flow booking
                   Navigator.of(context).pushNamed(AppRouter.bookingListRoute);
                 },
               ),
@@ -134,7 +133,6 @@ class RequestDetailPage extends StatelessWidget {
                 width: double.infinity,
                 child: OutlinedButton.icon(
                   onPressed: () {
-                    // Placeholder untuk fitur hapus
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text("Fitur hapus belum diimplementasikan"),

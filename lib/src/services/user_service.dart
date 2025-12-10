@@ -1,24 +1,26 @@
-/// Service sederhana untuk mengelola data user.
-/// Nanti bisa dihubungkan ke Firebase/Auth API sesuai kebutuhan.
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/user_model.dart';
+
 class UserService {
-  // Simulasi data user
-  String _name = "Nisya";
-  String _email = "nisya@example.com";
+  final CollectionReference usersRef =
+      FirebaseFirestore.instance.collection('users');
 
-  String get name => _name;
-  String get email => _email;
+  /// GET user by ID
+  Future<UserModel?> getUserById(String userId) async {
+    final doc = await usersRef.doc(userId).get();
+    if (!doc.exists) return null;
 
-  /// Update profil user
-  Future<void> updateProfile({required String name, required String email}) async {
-    // TODO: sambungkan ke backend/Firebase
-    await Future.delayed(const Duration(milliseconds: 500));
-    _name = name;
-    _email = email;
+    return UserModel.fromMap(doc.id, doc.data() as Map<String, dynamic>);
   }
 
-  /// Logout user
-  Future<void> logout() async {
-    // TODO: implementasi logout (FirebaseAuth.instance.signOut())
-    await Future.delayed(const Duration(milliseconds: 500));
+  /// UPDATE user profile
+  Future<void> updateProfile(String userId, Map<String, dynamic> data) async {
+    data['updatedAt'] = Timestamp.now();
+    await usersRef.doc(userId).update(data);
+  }
+
+  /// CREATE user (dipanggil saat register)
+  Future<void> createUser(UserModel user) async {
+    await usersRef.doc(user.id).set(user.toMap());
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/chat_vm.dart';
-import '../../app_router.dart';
+import 'package:jastipie_app/app_router.dart';
 
 class ChatListPage extends StatelessWidget {
   final String currentUserId;
@@ -33,7 +33,9 @@ class ChatListPage extends StatelessWidget {
               final chat = chats[i];
               final chatId = chat['chatId'] as String? ?? '';
               final lastMessage = chat['lastMessage'] as String? ?? '';
-              final participants = List<String>.from(chat['participants'] ?? []);
+              final participants = List<String>.from(
+                chat['participants'] ?? [],
+              );
 
               // other participant id
               final other = participants.firstWhere(
